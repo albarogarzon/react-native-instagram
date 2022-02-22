@@ -2,10 +2,10 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-import { USER_STATE_CHANGE } from '../constants';
+import { USER_POSTS_STATE_CHANGE, USER_STATE_CHANGE } from '../constants';
 
 export function fetchUser() {
-  return ((dispach) => {
+  return (dispach) => {
     firebase
       .firestore()
       .collection('users')
@@ -13,11 +13,29 @@ export function fetchUser() {
       .get()
       .then((snapshot) => {
         if (snapshot.exists) {
-          console.log('Snap ', snapshot.data());
           dispach({ type: USER_STATE_CHANGE, currentUser: snapshot.data() });
         } else {
-          console.log('Does not exist');
         }
       });
-  })
+  };
+}
+
+export function fetchUserPosts() {
+  return (dispach) => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userPosts')
+      .orderBy('creation', 'asc')
+      .get()
+      .then((snapshot) => {
+        let posts = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+        dispach({ type: USER_POSTS_STATE_CHANGE, posts });
+      });
+  };
 }

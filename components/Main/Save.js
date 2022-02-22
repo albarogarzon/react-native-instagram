@@ -16,8 +16,6 @@ export default function Save(props) {
       firebase.auth().currentUser.uid
     }/${Math.random().toString(36)}`;
 
-    console.log('path', childPath);
-
     const response = await fetch(uri);
     const blob = await response.blob();
 
@@ -28,6 +26,7 @@ export default function Save(props) {
     };
     const taskCompleted = () => {
       task.snapshot.ref.getDownloadURL().then((snapshot) => {
+        savePostData(snapshot);
         console.log('comp ', snapshot);
       });
     };
@@ -36,6 +35,22 @@ export default function Save(props) {
       console.log('err ', snapshot);
     };
     task.on('state_changed', taskProgress, taskError, taskCompleted);
+  };
+
+  const savePostData = (downloadURL) => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userPosts')
+      .add({
+        downloadURL,
+        caption,
+        creation: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(function () {
+        props.navigation.popToTop();
+      });
   };
 
   return (

@@ -23,7 +23,6 @@ export default function Add({navigation}) {
       setHasCameraPermission(status === 'granted');
 
       const galleryStatus = await ImagePicker.getMediaLibraryPermissionsAsync();
-      console.log(galleryStatus.status);
 
       setGalleryPermission(galleryStatus.status === 'granted');
     })();
@@ -32,7 +31,6 @@ export default function Add({navigation}) {
   const takePicture = async () => {
     if (camera) {
       const data = await camera.takePictureAsync(null);
-      console.log(data.uri);
       setImage(data.uri);
     }
   };
@@ -45,8 +43,6 @@ export default function Add({navigation}) {
       aspect: [1, 1],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.cancelled) {
       setImage(result.uri);

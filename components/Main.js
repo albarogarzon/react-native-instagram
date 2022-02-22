@@ -10,7 +10,7 @@ const EmptyScreen = () => {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchUser } from '../redux/actions';
+import { fetchUser, fetchUserPosts } from '../redux/actions';
 
 import FeedScreen from './Main/Feed';
 import ProfileScreen from './Main/Profile';
@@ -18,6 +18,7 @@ import ProfileScreen from './Main/Profile';
 export class Main extends Component {
   componentDidMount() {
     this.props.fetchUser();
+    this.props.fetchUserPosts();
   }
   render() {
     return (
@@ -68,6 +69,6 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
 });
 const mapDispatchProps = (dispatch) =>
-  bindActionCreators({ fetchUser }, dispatch);
+  bindActionCreators({ fetchUser, fetchUserPosts }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);

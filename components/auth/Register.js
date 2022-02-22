@@ -21,24 +21,24 @@ export class Register extends Component {
 
   onSignUp() {
     const { email, password, name } = this.state;
-
+    console.log("email", { email, password, name });
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
+        console.log("then",userCredential);
         firebase
           .firestore()
           .collection('users')
           .doc(firebase.auth().currentUser.uid)
           .set({ name, email });
         const user = userCredential.user;
-        console.log(userCredential);
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorMessage);
+        console.log("err",errorCode,errorMessage);
         // ..
       });
   }

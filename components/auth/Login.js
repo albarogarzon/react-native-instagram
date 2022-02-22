@@ -37,10 +37,6 @@ export class Login extends Component {
     return (
       <View>
         <TextInput
-          placeholder="name"
-          onChangeText={(name) => this.setState({ name })}
-        />
-        <TextInput
           placeholder="email"
           onChangeText={(email) => this.setState({ email })}
         />
