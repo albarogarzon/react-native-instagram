@@ -8,14 +8,13 @@ import {
   USER_FOLLOWING_STATE_CHANGE,
   USERS_DATA_STATE_CHANGE,
   USERS_POSTS_STATE_CHANGE,
-  CLEAR_DATA
+  CLEAR_DATA,
 } from '../constants';
 
-
-export function clearData(){
-  return ((dispatch)=>{
-    dispatch({type:CLEAR_DATA})
-  })
+export function clearData() {
+  return (dispatch) => {
+    dispatch({ type: CLEAR_DATA });
+  };
 }
 
 export function fetchUser() {
@@ -35,7 +34,7 @@ export function fetchUser() {
 }
 
 export function fetchUserPosts() {
-  return ((dispach) => {
+  return (dispach) => {
     firebase
       .firestore()
       .collection('posts')
@@ -51,11 +50,11 @@ export function fetchUserPosts() {
         });
         dispach({ type: USER_POSTS_STATE_CHANGE, posts });
       });
-  });
+  };
 }
 
 export function fetchUserFollowing() {
-  return ((dispach) => {
+  return (dispach) => {
     firebase
       .firestore()
       .collection('following')
@@ -67,15 +66,15 @@ export function fetchUserFollowing() {
           return id;
         });
         dispach({ type: USER_FOLLOWING_STATE_CHANGE, following });
-        for(let i=0;i<following.length;i++){
-          dispach(fetchUsersData(following[i]))
+        for (let i = 0; i < following.length; i++) {
+          dispach(fetchUsersData(following[i],true));
         }
       });
-  })
+  };
 }
 
-export function fetchUsersData(uid) {
-  return ((dispach, getState) => {
+export function fetchUsersData(uid, getPosts) {
+  return (dispach, getState) => {
     const found = getState().usersState.users.some((el) => el.uid === uid);
     if (!found) {
       firebase
@@ -88,17 +87,18 @@ export function fetchUsersData(uid) {
             let user = snapshot.data();
             user.uid = snapshot.id;
             dispach({ type: USERS_DATA_STATE_CHANGE, user });
-            console.log("user id ", user.uid);
-            dispach(fetchUsersFollowingPosts(user.uid))
           } else {
           }
         });
+      if (getPosts) {
+        dispach(fetchUsersFollowingPosts(uid));
+      }
     }
-  })
+  };
 }
 
 export function fetchUsersFollowingPosts(uid) {
-  return ((dispach, getState) => {
+  return (dispach, getState) => {
     firebase
       .firestore()
       .collection('posts')
@@ -108,7 +108,7 @@ export function fetchUsersFollowingPosts(uid) {
       .get()
       .then((snapshot) => {
         //const uid = snapshot.docs[0].ref.path.split('/')[1];
-        console.log("snap1 ",snapshot.docs[0]);
+        console.log('snap1 ', snapshot.docs[0]);
         //const uid = snapshot.docs[0].ref.path.split('/')[1]
         console.log({ snapshot, uid });
         const user = getState().usersState.users.find((el) => el.uid === uid);
@@ -122,5 +122,5 @@ export function fetchUsersFollowingPosts(uid) {
         dispach({ type: USERS_POSTS_STATE_CHANGE, posts, uid });
         console.log(getState());
       });
-  })
+  };
 }
