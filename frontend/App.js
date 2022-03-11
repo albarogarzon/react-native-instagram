@@ -25,12 +25,12 @@ import thunk from 'redux-thunk';
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAgX5QEG7J4WrhxS69ir-ci-d2AQ4FH4UU',
-  authDomain: 'react-native-firebase-20c73.firebaseapp.com',
-  projectId: 'react-native-firebase-20c73',
-  storageBucket: 'react-native-firebase-20c73.appspot.com',
-  messagingSenderId: '260385971213',
-  appId: '1:260385971213:web:173803e7644f6147de4944',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -62,6 +62,7 @@ export class App extends Component {
 
   render() {
     const { loggedIn, loaded } = this.state;
+
     if (!loaded) {
       return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -100,7 +101,7 @@ export class App extends Component {
               component={SaveScreen}
               navigation={this.props.navigation}
             />
-                        <Stack.Screen
+            <Stack.Screen
               name="Comment"
               component={CommentScreen}
               navigation={this.props.navigation}
